@@ -1,0 +1,388 @@
+.link{
+  padding: 1px;
+  text-align: center;
+  font-size: 18px;
+  width: 200px;
+  height: 50px; 
+  background: #FFCA42;
+  font-family: 'Courier New', Courier, monospace;
+  cursor: pointer;
+  }
+  
+  
+  
+  
+  .link:hover {
+    background-color: #0056b3;
+    color: white;
+  }
+  
+  .termin{  
+      position: absolute;
+      width: 20%;
+      text-align: center;
+      font-size: 18px;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Teko', sans-serif;
+      font-weight: 400;
+      font-size: 21.8px;
+      line-height: 154.5%;
+      color: #FFCA42;
+  }
+  
+  .kalendar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 90vh;
+  }
+  .big-container {
+      display: flex;
+    justify-content: space-evenly;
+    height: 52rem; /* ovo sam izmenio */
+    /* height: 100vh; ili 90vh*/
+    
+    
+  }
+  .small-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      max-width: 30%;
+      
+  }
+  .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 600px;
+      max-height: 600px; 
+      /* border: 2px solid #000;
+      border-radius: 10px;
+      padding: 7px; */
+      
+  
+      /* display: grid;
+      grid-row: 1; */
+    
+      
+  }
+  
+  .flex-item {
+    max-width: 100%;
+      width: auto;
+      margin: 1%;
+      
+  
+    }
+  .button-option {
+      margin: 5%;
+      border-radius: 20px;
+      padding: 3px 15px 2px 15px;
+      border: 2px #FFCA42 solid;
+      background-color: rgba(0, 0, 0, 0);
+      color: white;
+      transition: .5s;
+      font-size: 20px;
+      color: #FFCA42;
+  }
+  
+  .button-option:hover {
+      box-shadow: 0px 0px 10px 5px #FFCA42 ;
+      /* box-shadow: 3px 3px red, -.5em 0 .4em red; */
+      /* box-shadow: rgba(240, 46, 170, 0.4) 4px 4px, rgba(240, 46, 170, 0.3) 9px 9px, rgba(240, 46, 170, 0.2) 14px 14px, rgba(240, 46, 170, 0.1) 19px 19px, rgba(240, 46, 170, 0.05) 24px 24px; */
+      cursor: pointer;
+  }
+  
+   .button-option:focus,
+  .button-option:active {
+    /* background-color: #83EEFF; */
+    background-color: #FFCA42;
+    color: black;
+  } 
+    
+  
+  .linija {
+      color: #000;
+      border-radius: 2px;
+  }
+  
+  .terminitekst {
+  
+      width: 200px;
+    height: auto;
+    font-style: normal;
+    font-weight: 550;
+    font-size: 80px;
+    line-height: 110%;
+    color: #FFCA42;
+    font-family: 'Teko', sans-serif;
+  }
+  
+  .terminipritisnite {
+    text-align: center;
+    font-family: 'Teko', sans-serif;
+    color: #FFCA42;
+    font-size: 24px;
+    margin-top: 30px;
+  }
+  
+  .terminitekst2 {
+      height: 68px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 180%;
+    /* or 34px */
+    top: 450px;
+    text-align: center;
+    align-items: center;
+    color: #FFCA42;
+    font-family: 'Teko', sans-serif;
+  }
+  
+  /* .terminidugmad {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .terminidugmad .link {
+    margin-bottom: 6%;
+    margin-top: 150px;
+  } */
+  
+  .modal-title {
+    font-family: 'Teko', sans-serif;
+    font-size: 19px;
+    }
+  .modal1 {
+    font-size: 23px;
+  }
+  
+  .modal-button-promeni,
+    .modal-button-dalje {
+      display: block;
+      margin: 0 auto;
+      margin-bottom: 10px; /* Razmak između dugmadi - prilagodite po potrebi */
+      cursor: pointer;
+    }
+  
+    .modal-button-promeni {
+      font-family: 'Teko', sans-serif;
+      padding: 9px;
+      width: 60%;
+      border-radius: 10px;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+
+    .modal-button-dalje {
+      font-family: 'Teko', sans-serif;
+      padding: 13px;
+      width: 85%;
+      border-radius: 10px;
+      font-size: 24px;
+      background-color: #ffca42;
+      transition: 0.3s;
+    }
+    .modal-button-dalje:hover {
+      color: #fff;
+      background-color: #1A1A1A;
+      box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+      transform: translateY(-2px);
+      background-color: #0056b3;
+    }
+
+
+
+    .modal-button-promeni:disabled {
+      pointer-events: none;
+    }
+    
+    .modal-button-promeni:hover {
+      color: #fff;
+      background-color: #1A1A1A;
+      box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+      transform: translateY(-2px);
+    }
+    
+    .modal-button-promeni:active {
+      box-shadow: none;
+      transform: translateY(0);
+    }
+  
+  
+  .button-28 {
+    appearance: none;
+    background-color: transparent;
+    border: 2px solid #FFCA42;
+    border-radius: 15px;
+    box-sizing: border-box;
+    color: #3B3B3B;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'Teko', sans-serif;  
+    font-size: 24px;
+    font-weight: 500;
+    line-height: normal;
+    margin: 0;
+    min-height: 60px;
+    min-width: 0;
+    outline: none;
+    padding: 16px 24px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 100%;
+    will-change: transform;
+  }
+  
+  .button-28:disabled {
+    pointer-events: none;
+  }
+  
+  .button-28:hover {
+    color: #fff;
+    background-color: #1A1A1A;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
+  }
+  
+  .button-28:active {
+    box-shadow: none;
+    transform: translateY(0);
+  }
+    
+  
+    
+  
+    .modal-question {
+      font-family: 'Teko', sans-serif;
+    }
+  
+  
+  
+  
+  
+  /* promeni dugme povecati zbog iphone, prazan prostor izmedju dugmadi... */
+  
+  
+  
+  @media screen and (min-width: 1000px) and (max-width: 3560px) {
+    .vertical-line2 {
+      width: 100%; /* Postavljamo širinu na 100% kako bi bila horizontalna linija */
+      height: 2px; /* Postavljamo visinu na 2px (ili drugu vrednost po potrebi) */
+      margin: 10px 0; /* Dodajemo razmak iznad i ispod linije */
+      background-color: #f08e0f;
+    }
+  }
+  
+  @media only screen and (max-width: 1700px) {
+    .big-container {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 10%; /* izmenio sam bilo je na 10%*/
+      margin-bottom: 5%;
+    }
+  
+    .buttons-container {
+      display: grid;
+      grid-row: 1;
+      grid-template-columns: repeat(4, 1fr); /* Postavite broj kolona na 3 na manjim ekranima */
+      justify-content: center;
+    }
+  
+  }
+  
+  @media only screen and (max-width: 600px)  {
+    .buttons-container {
+      display: grid;
+      grid-row: 1;
+      grid-template-columns: repeat(4, 1fr); /* Maksimalno 8 kolona na mobilnim uređajima */
+      justify-content: center;
+      /* top: 450px; */
+      margin-bottom: 3px;
+    }
+  
+    .terminipritisnite {
+      white-space: pre-line;
+      font-size: 20px;
+    }
+
+    .modal-button-dalje {
+      padding: 10px;
+    }
+  
+    
+  
+  .vertical-line2 {
+    width: 100%; /* Postavljamo širinu na 100% kako bi bila horizontalna linija */
+    height: 2px; /* Postavljamo visinu na 2px (ili drugu vrednost po potrebi) */
+    margin: 10px 0; /* Dodajemo razmak iznad i ispod linije */
+    background-color: #f08e0f;
+  }
+    
+  
+    .button-option {
+      font-size: 18px;
+      margin: 5%; /*none sam dodao, bilo je 1% ili 5%*/
+    }
+  
+    .flex-item {
+      width: 100%;
+    }
+  
+    .small-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      max-width: 70%;
+  }
+  
+  .button-28 {
+    appearance: none;
+    background-color: transparent;
+    border: 2px solid #FFCA42;
+    border-radius: 15px;
+    box-sizing: border-box;
+    color: #3B3B3B;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'Teko', sans-serif;  
+    font-size: 24px;
+   font-weight: 900;
+    line-height: normal;
+    margin: 0;
+    min-height: 60px;
+    min-width: 0;
+    outline: none;
+    padding: 6px 24px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 100%;
+    will-change: transform;
+  }
+  
+    
+  
+  
+  
+  }
+  
+  @media only screen and (max-width: 360px) {
+    .button-option {
+      font-size: 17px;
+    }
+  }
+  

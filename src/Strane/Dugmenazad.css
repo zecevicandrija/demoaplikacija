@@ -1,0 +1,21 @@
+.dugmenazad {
+  padding: 5px;
+  
+  border-radius: 3px;
+  font-family: 'Teko', sans-serif;
+  font-style: normal;
+  font-size: 22px;
+  color: black;
+  margin-bottom: 5px;
+  font-family: 'Teko', sans-serif;
+  width: 90px;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-top: 40px;
+  transition: 0.3s;
+}
+
+.dugmenazad:hover {
+  background-color: #0056b3;
+  color: white;
+}

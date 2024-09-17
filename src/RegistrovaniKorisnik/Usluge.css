@@ -1,0 +1,42 @@
+/* Usluge.css */
+
+/* Dodaj ove stilove za fleksibilan wrap */
+.service-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Prostor između usluga */
+    justify-content: center;
+  }
+ 
+  
+  .card-text {
+    text-align: center;
+  }
+  
+ 
+  .tabelanaslov {
+    color: #f08e0f;
+  }
+  
+  
+  .vrednost-usluge {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .dodajuslugucontainer {
+    margin-top: 20px;
+  }
+
+  .uslugedugmad {
+    margin: 5px;
+  }
+
+  .uslugedugmad > button:first-child {
+    margin: 5px;
+  }
+
+  .uslugedugmad > button:last-child {
+    background-color: red;
+  }

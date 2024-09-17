@@ -1,0 +1,135 @@
+/* Stilovi za stranicu "Podaci Korisnika" */
+
+/* Opšti stilovi stranice */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  /* Stilovi za container 3 */
+  .conteiner3 {
+    border: 1px solid gold;
+    padding: 1px;
+    width: 30%;
+    margin: auto;
+    margin-top: 40px;
+    text-align: center;
+  }
+  
+  /* Stilovi za paragraf pod className 'tekst3' */
+  .tekst3 {
+    font-size: 25px;
+  }
+ /* Stilovi za container 1 */
+.conteiner1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  /* Stilovi za tekst i input kontejnere */
+  .text-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px; /* Dodatni margin između svakog text-input kontejnera */
+  }
+  
+  /* Stilovi za paragraf pod className 'text1' i 'text2' */
+  .text1,
+  .text2 {
+    font-size: 23px;
+  }
+  
+  /* Stilovi za input polje pod className 'input1' */
+  .input1 {
+    border: 1px solid gold;
+    padding: 5px 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    width: 250px !important;
+  }
+  
+  /* Stilovi za input polje pod className 'input2' */
+  .input2 {
+    border: 1px solid gold;
+    padding: 5px 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    width: 250px;
+  }
+  
+  /* Stilovi za link pod className 'zavrsite' */
+  .zavrsite {
+    padding: 10px;
+  background-color: #ffca42;
+  border-radius: 3px;
+  font-family: "Cardo";
+  font-style: normal;
+  font-size: 20%;
+  color: black;
+  margin-bottom: 5px;
+  }
+  
+  .zavrsite:hover {
+    background-color: #0056b3;
+  }
+
+.podacidugmenazad{
+  margin-top: 50%;
+  font-size: 80%;
+}
+
+.podacikorisnikadugmad {
+  display: flex;
+  flex-direction: column;
+  width: 10%;
+  align-items: center;
+  margin: auto;
+}
+
+.podacikorisnikadugmad .zavrsite {
+  margin-bottom: 25%;
+}
+
+.zavrsite {
+  padding: 8px;
+  background-color: #ffca42;
+  border-radius: 3px;
+  font-family: "Cardo";
+  font-style: normal;
+  font-size: 22px;
+  color: black;
+  margin-bottom: 5px;
+  font-family: 'Teko', sans-serif;
+  width: 150px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.zavrsite:hover {
+  background-color: #0056b3;
+  color: white;
+}
+.MuiAutocomplete-listbox {
+  width: 100%;
+}
+
+@media screen and (max-width: 1200px) {
+   /* Stilovi za container 3 */
+   .conteiner3 {
+    border: 1px solid gold;
+    padding: 7px;
+    width: 80%;
+    margin: auto;
+    text-align: center;
+    margin-top: 20%;
+  }
+  
+  /* Stilovi za paragraf pod className 'tekst3' */
+  .tekst3 {
+    font-size: 20px;
+  }
+}

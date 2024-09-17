@@ -1,0 +1,117 @@
+.radno-vreme-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.radno-vreme-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.slajderp {
+  text-align: center;
+  width: 250px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  margin: 20px auto;
+  font-size: 18px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.radno-vreme-table th,
+.radno-vreme-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.radno-vreme-table th {
+  background-color: #f2f2f2;
+}
+
+.radnovremebutton {
+  margin: 20px;
+}
+
+/* Input fields */
+.day-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.day-label {
+  font-weight: bold;
+  text-transform: capitalize;
+  margin-top: 5px;
+}
+
+.neradan-checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.neradan-checkbox-label {
+  margin-left: 5px;
+  font-size: 12px;
+  color: gray;
+}
+
+.neradan-checkbox {
+  margin-top: 5px;
+}
+
+.time-selector {
+  margin-top: 5px;
+}
+
+.slider-container {
+  margin-top: 15px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .desktop-table {
+    display: none;
+  }
+  .mobile-view {
+    display: block;
+    width: 100%;
+  }
+  .frizer-mobile-card {
+    background-color: #fff;
+    margin-bottom: 20px;
+    padding: 55px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  .frizer-name-mobile {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .day-mobile-card {
+    margin-bottom: 10px;
+  }
+  .day-name-mobile {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+  .frizer-time-mobile {
+    font-size: 20px;
+    margin: 0;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-table {
+    display: block;
+  }
+  .mobile-view {
+    display: none;
+  }
+}

@@ -1,0 +1,147 @@
+/* Stil za karticu */
+body {
+  touch-action: manipulation;
+}
+
+.pozadinaamss{ 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ovaj stil će omogućiti da video pokriva celu pozadinu */
+  z-index: -1;
+  filter: brightness(50%);
+}
+
+
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  flex-direction: column;
+}
+.user-data-card {
+ 
+  border: 1px solid gold;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1%;
+  max-width: 400px; /* Prilagodite veličinu kartice po potrebi */
+  width: 40%;
+  background-color: white;
+}
+
+.user-info {
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.service-info {
+  margin-bottom: 10px;
+  text-transform: capitalize;
+  font-size: 22px;
+}
+
+.other-info {
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+/* Stil za dugme "Zakaži" */
+.dugmezazakazivanje {
+  padding: 8px;
+  width: 150px;
+  background-color: #ffca42;
+  border-radius: 10px;
+  font-family: 'Teko', sans-serif;
+  font-style: normal;
+  font-size: 20px;
+  color: black;
+  margin: 20px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.dugmezazakazivanje:hover {
+  background-color: #0056b3;
+  color: white;
+}
+
+.vertical-line3 {
+  width: 100%; /* Postavljamo širinu na 100% kako bi bila horizontalna linija */
+    height: 2px; /* Postavljamo visinu na 2px (ili drugu vrednost po potrebi) */
+    margin: 10px 0; /* Dodajemo razmak iznad i ispod linije */
+    background-color: #f08e0f;
+}
+
+
+/* Dodatne stilizacije za tekst unutar kartice */
+.user-data-card p {
+  margin: 10px; /* Uklonite marginu za <p> elemente */
+  width: 80%; /* Ograničite širinu teksta na 80% širine kartice */
+  text-align: left; /* Poravnajte tekst po levoj strani */
+}
+
+.alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.alert-box {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.alert-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.alert-message {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.alert-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  outline: none;
+}
+.error-message {
+  color: red;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+
+@media screen and (max-width: 768px) {
+  .user-data-card {
+ 
+    border: 1px solid gold;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 7%;
+    max-width: 600px; /* Prilagodite veličinu kartice po potrebi */
+    width: 60%;
+    background-color: white;
+  }
+}

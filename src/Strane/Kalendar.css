@@ -1,0 +1,75 @@
+/* styles.css ili u istom fajlu gde je JSX */
+.my-calendar-container {
+  font-family: 'Teko', sans-serif; /* Koristi Material-UI font ako je dostupan */
+    
+  }
+  
+  .my-calendar {
+    width: 300px; /* Prilagodite širinu kalendaru prema potrebi */
+    max-width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid transparent;
+  }
+  
+  .react-calendar {
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 10px;
+    
+  }
+
+  .react-calendar__month-view .react-calendar__month-view__weekdays abbr {
+    font-family: 'Teko', sans-serif;
+    text-transform: uppercase;
+    font-size: 21px;
+    text-decoration: none;
+
+  }
+
+
+  .react-calendar__tile {
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: transparent;
+    border-radius: 50px;       
+  }
+  
+  .react-calendar__tile:hover {
+    background-color: #f0f0f0;
+  }
+  
+  
+  .react-calendar__tile--active {
+    background-color: #3498db;
+    color: #fff;
+  }
+  
+  .react-calendar__tile--disabled {
+    cursor: not-allowed;
+    background-color: gray;
+  }
+  
+  .react-calendar__navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ffca42;
+    color: #fff;
+    
+    
+  }
+  
+  .react-calendar__navigation__label,
+  .react-calendar__navigation__arrow {
+    cursor: pointer;
+  }
+  
+  .react-calendar__navigation__arrow:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  

@@ -1,0 +1,153 @@
+/* Statistika.css */
+.container {
+  padding: 20px;
+}
+
+.calendar {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.event-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.event-table th,
+.event-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.event-table th {
+  background-color: #f2f2f2;
+}
+
+.event-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.event-table tbody tr:hover {
+  background-color: #ddd;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.page-item {
+  margin: 5px;
+}
+
+.page-link {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.page-item.active .page-link {
+  background-color: #007bff;
+  color: #fff;
+  border: 1px solid #007bff;
+}
+
+.filter-container,
+.date-filter-container {
+  margin: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.filter-input,
+.date-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.frizer-select {
+  margin-bottom: 15px;
+  min-width: 200px;
+}
+
+.ukupna-zarada {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.calendar-link {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.calendar-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive table styling */
+@media screen and (max-width: 600px) {
+  .event-table thead {
+    display: none;
+  }
+
+  .event-table,
+  .event-table tbody,
+  .event-table tr,
+  .event-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .event-table tr {
+    margin-bottom: 15px;
+  }
+
+  .event-table td {
+    text-align: left;
+    padding-left: 50%;
+    position: relative;
+    border: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .event-table tbody tr {
+    border: 1px solid black;
+  }
+
+  .event-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: 45%;
+    padding-left: 15px;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .event-table tbody tr:nth-child(even) {
+    background-color: transparent;
+  }
+
+  .pagination {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .page-item {
+    margin: 5px 0;
+  }
+}

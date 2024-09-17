@@ -1,0 +1,181 @@
+.slikapozadina {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; /* Ensure it's behind other content */
+}
+
+
+.kartica-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  flex-direction: row;
+  margin: 4vh;
+  }
+  .centriranje-div { 
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    flex-direction: row;
+    margin: 5vh;
+  }
+  
+  .kartica {
+    /* display: flex;
+    width: 40%;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s; */
+    width: 300%;
+    height: 60%;
+  background-color: #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0.5rem;
+  padding: 6rem;
+  box-shadow: 1rem 1rem 2rem #ddd, -1rem -1rem 2rem #eee;
+  transition: box-shadow 0.5s;
+  filter: brightness(95%);
+}
+
+  .kartica:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+
+  .ime-usluge1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f08e0f;
+    
+    white-space: nowrap; /* Ovo će sprečiti prelazak na sledeći red */
+}
+
+  .slika-frizera {
+      width: 10rem;
+      height: 10rem;
+      object-fit: cover;
+      margin: 1px;
+      border-radius: 50%;
+    }
+  
+    .dugme1-container {
+      display: flex;
+  justify-content: center;
+    }
+
+  .dugme1 {
+    padding: 10px 40px;
+  background-color: #ffca42;
+  border-radius: 10px;
+  font-family: 'Teko', sans-serif;
+  font-style: normal;
+  font-size: 22px;
+  position: fixed;
+  bottom: 60px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  }
+
+  .dugme1:hover {
+    background-color: #0056b3;
+    color: #ccc;
+  }
+
+  .naslov {
+    letter-spacing: -0.02em;
+  color: #f08e0f;
+  
+  text-transform: capitalize;
+  }
+
+.inputcekboks {
+    margin: 20px;
+      height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+  }
+
+  .kartica-dugmad > button:first-child {
+    margin: 7%;
+  }
+
+  .kartica-dugmad > button:last-child {
+    background-color: red;
+  }
+
+  .dodajfrizeradugme {
+    top: 15px;
+  }
+  
+
+
+  /* Mobile devices – 320px — 480px */
+@media screen and (min-width: 320px) and (max-width: 480px) {
+  .kartica {
+    width: 100%; /* Puni širina na mobilnim uređajima */
+    height: 85%;
+  }
+
+  .dugme1 {
+    bottom: 60px;
+    margin-bottom: 50px;
+  }
+
+  .kartica-container {
+    justify-content: center;
+    margin: 0 auto;
+  }
+}
+
+/* iPads, Tablets – 481px — 768px */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .kartica {
+    width: 50%; /* Polovina širine na tabletima */
+  }
+  .dugme1 {
+    bottom: 50px;
+    margin-bottom: 50px;
+  }
+}
+
+/* Small screens, laptops – 769px — 1024px */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .kartica {
+    width: 33.33%; /* Trećina širine na laptopima */
+  }
+  .dugme1 {
+    bottom: 50px;
+  }
+}
+
+/* Desktops, large screens – 1025px — 1200px */
+@media screen and (min-width: 1025px) and (max-width: 1200px) {
+  .kartica {
+    width: 25%; /* Četvrtina širine na desktopima */
+  }
+  .dugme1 {
+    bottom: 50px;
+  }
+}
+
+/* Extra large screens, TV – 1201px, and more */
+@media screen and (min-width: 1201px) {
+  .kartica {
+    width: 20%; /* Petina širine na ekstra velikim ekranima */
+  }
+
+  .dugme1 {
+    bottom: 50px;
+  }
+}

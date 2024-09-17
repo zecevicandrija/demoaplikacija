@@ -1,0 +1,30 @@
+.dodajfrizera-kontejner {
+    display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+.dodajfrizera-kontejner .novi-frizer-input {
+    width: 50%;
+}
+
+.novifrizer-naslov {
+    font-family: 'Cardo', serif;
+    text-transform: uppercase;
+}
+
+
+@media (max-width: 600px) {
+    .dodajfrizera-kontejner {
+      width: 100%; /* Puni širina ekrana */
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+    }
+    
+    .novi-frizer-input {
+      width: 50%; /* Puni širina ekrana */
+    }   
+  }

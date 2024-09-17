@@ -1,0 +1,26 @@
+/* ImageUploaderComponent.css */
+
+.image-uploader-container {
+    margin-bottom: 20px; /* Dodajte željeni stil za kontejner */
+  }
+  
+  
+  .preview-container {
+    margin-top: 10px;
+    font-size: 18px;
+  }
+  
+  .image-preview {
+    max-width: 50%; /* Postavite maksimalnu širinu prema potrebi */
+    height: auto;
+    margin-top: 10px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .image-preview {
+        max-width: 100%; /* Postavite maksimalnu širinu prema potrebi */
+        height: auto;
+        margin-top: 10px;
+      }
+  }
+  

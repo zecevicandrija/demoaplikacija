@@ -1,32 +1,237 @@
-  .proizvod-kontejner {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
+.pazljivocentar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.slikapozadina2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; /* Ensure it's behind other content */
+}
+.pazljivo {
+  height: 68px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 180%;
+  /* or 34px */
+  top: 450px;
+  text-align: center;
+  align-items: center;
+  color: #f08e0f;
+  font-family: 'Teko', sans-serif;
+}
+
+.uslugecentar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.usluge {
+  width: 152px;
+  height: 55px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 50px;
+  line-height: 110%;
+  letter-spacing: -0.02em;
+  color: #f08e0f;
+  font-family: 'Teko', sans-serif;
+  text-transform: uppercase;
+}
+
+.kraj {
+  text-align: center;
+  font-family: 'Teko', sans-serif;
+}
+
+.zakazitermin {
+  padding: 10px;
+  background-color: #ffca42;
+  border-radius: 3px;
+  font-family: "Cardo";
+  font-style: normal;
+  font-size: 17px;
+}
+
+.service-card {
+  /* background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 5px;
+  margin: 30px;
+  text-align: left;
+  width: 25%;
+  display: flex;
+  justify-content: space-between;
+  border-color: #FFCA42;
+  border-style: solid; */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 50px;
+  text-align: center;
+  width: 25%;
+  filter: brightness(90%);
+}
+
+.card-text {
+  /* max-width: 300px;
+  margin: 5px;
+  display: flex;
+  flex-direction: column; */
+  width: 35rem;
+  background-color: #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  box-shadow: 1rem 1rem 2rem #ddd, -1rem -1rem 2rem #eee;
+  transition: box-shadow 0.5s;
+}
+
+.centriranje {
+  display: flex;
+  align-content: center;
+  flex-flow: row wrap;
+  flex-wrap: column;
+  justify-content: space-around;
+  margin: 3%;
+}
+
+.vrednost-usluge {
+  font-size: 2rem;
+  color: #f08e0f;
+  display: flex;
+  flex-direction: row;
+  font-family: 'Cardo', serif;
+}
+.vrednost-usluge > *:not(:last-child) {
+  margin-right: 1rem; /* Dodajte ovu liniju da biste dodali razmak između elemenata */
+}
+
+.slika1 {
+  width: 10rem;
+  height: 10rem;
+  object-fit: cover;
+  margin: 1px;
+  border-radius: 50%;
+}
+
+.pazljivo {
+  text-align: center;
+  margin-top: 20px;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.zakazitermin:hover {
+  background-color: #0056b3;
+  color: #ccc;
+}
+
+.zakazitermin:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.kraj {
+  /* text-align: center; */
+  display: flex;
+  justify-content: center;
+}
+
+.zakazitermin {
+  padding: 10px 40px;
+  background-color: #ffca42;
+  border-radius: 10px;
+  font-family: 'Teko', sans-serif;
+  font-style: normal;
+  font-size: 22px;
+  position: fixed;
+  bottom: 60px;
+  cursor: pointer;
+}
+
+.oznaci {
+  padding: 5px;
+  cursor: pointer;
+}
+
+
+.ime-usluge {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #f08e0f;
   
-  .proizvod-kartica {
-    width: calc(33.33% - 10px);
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    text-align: center;
-  }
-  
-  .proizvod-kartica img {
+  text-transform: capitalize;
+}
+
+.opis-usluge {
+  font-size: 20px;
+  text-align: center;
+
+  margin: 1px;
+}
+
+.cekbox {
+  margin: 20px;
+    height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+
+
+.kartica-dugmad2 > button:first-child {
+  margin: 5%;
+}
+
+.logged-in-button {
+  font-family: 'Teko', sans-serif;
+}
+
+
+.slider-container {
+  width: 300px;
+  margin: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .slika1 {
     width: 100%;
     height: auto;
-    border-radius: 5px;
+    transform: scale(0.5, 0.5);
   }
-  
-  .proizvod-kartica h2 {
-    margin-top: 10px;
-    margin-bottom: 0;
-    font-size: 24px;
+
+  .service-card {
+    width: 80%;
+    margin: 40px auto;
   }
-  
-  .proizvod-kartica p.cena {
-    font-size: 20px;
-    color: #f00;
-    margin-top: 5px;
+
+  .dodajuslugudiv {
+    margin: 10%;
   }
+}
+
+@media only screen and (max-width: 400px) {
+  .dodajuslugudiv {
+    margin: 10%;
+  }
+
+  .slika1 {
+    width: 60%;
+    height: 150px;
+    transform: scale(1, 1);
+      object-fit: cover;
+      border-radius: 50%;
+  }
+}
