@@ -23,7 +23,7 @@ const Pauza = (onPostavi, mojDatum) => {
   useEffect(() => {
     async function fetchFrizeri() {
       try {
-        const frizeriQuerySnapshot = await getDocs(collection(db, "Frizeri"));
+        const frizeriQuerySnapshot = await getDocs(collection(db, "FRizeri"));
         const frizeriData = frizeriQuerySnapshot.docs.map((doc) => doc.data().frizer.ime);
         setFrizeriList(frizeriData);
       } catch (error) {
@@ -36,7 +36,7 @@ const Pauza = (onPostavi, mojDatum) => {
   
   const slanjePauzeBazi = async (event) => {
     try {
-      const docRef = await addDoc(collection(db, "Zakazivanje"), {
+      const docRef = await addDoc(collection(db, "ZAkazivanje"), {
         imeKorisnika: "pauza",
         brojKorisnika: "01234567",
         izabraneUsluge: {'datum':datum,'frizer':frizer ,pocetakTermina , usluge: { 'pauza': sliderValue }},

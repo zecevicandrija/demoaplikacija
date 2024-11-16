@@ -26,7 +26,7 @@ const NoviFrizer = () => {
       }
 
       // Dodaj podatke u Firestore
-      const docRef = await addDoc(collection(db, "Frizeri"), {
+      const docRef = await addDoc(collection(db, "FRizeri"), {
         frizer: {
           ime: ime,
           slika: imageUrl,

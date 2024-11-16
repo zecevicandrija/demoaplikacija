@@ -17,7 +17,6 @@ const RadnoVreme = () => {
   const [sliderValue, setSliderValue] = useState(15);
   const [frizeriList, setFrizeriList] = useState([]);
 
-  // Definišemo niz dana u nedelji u ispravnom redosledu
   const daysOfWeek = [
     "ponedeljak",
     "utorak",
@@ -30,7 +29,7 @@ const RadnoVreme = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const frizeriQuerySnapshot = await getDocs(collection(db, "Frizeri"));
+      const frizeriQuerySnapshot = await getDocs(collection(db, "FRizeri"));
 
       let frizeriData = [];
       frizeriQuerySnapshot.forEach((doc) => {
@@ -52,7 +51,6 @@ const RadnoVreme = () => {
       setWorkHours(odabraniFrizer.frizer.radnoVreme || {});
       setSliderValue(odabraniFrizer.frizer.korak || 15);
     } else {
-      // Inicijalizacija workHours sa praznim vrednostima
       const initialWorkHours = {};
       daysOfWeek.forEach((day) => {
         initialWorkHours[day] = { pocetak: "", kraj: "", neradan: false };
@@ -71,17 +69,19 @@ const RadnoVreme = () => {
     return options;
   };
 
-  const timeOptionsPocetak = generateTimeOptions(8, 20);
-  const timeOptionsKraj = generateTimeOptions(8, 20);
+  const timeOptionsPocetak = generateTimeOptions(7, 20);
+  const timeOptionsKraj = generateTimeOptions(7, 20);
 
   const handleNeradanChange = (event, day) => {
     const newWorkHours = { ...workHours };
+    newWorkHours[day] = newWorkHours[day] || { pocetak: "", kraj: "", neradan: false };
     newWorkHours[day].neradan = event.target.checked;
     setWorkHours(newWorkHours);
   };
 
   const handleTimeChange = (event, day, type) => {
     const newWorkHours = { ...workHours };
+    newWorkHours[day] = newWorkHours[day] || { pocetak: "", kraj: "", neradan: false };
     newWorkHours[day][type] = event.target.value;
     setWorkHours(newWorkHours);
   };
@@ -89,7 +89,7 @@ const RadnoVreme = () => {
   const handleSpremiRadnoVreme = async () => {
     try {
       const frizerQuerySnapshot = await getDocs(
-        query(collection(db, "Frizeri"), where("frizer.ime", "==", frizer))
+        query(collection(db, "FRizeri"), where("frizer.ime", "==", frizer))
       );
       if (frizerQuerySnapshot.docs.length === 0) {
         return;
@@ -98,7 +98,6 @@ const RadnoVreme = () => {
       const frizerDoc = frizerQuerySnapshot.docs[0];
       const frizerId = frizerDoc.id;
 
-      // Konvertujemo pocetak i kraj u brojeve
       const updatedWorkHours = {};
       daysOfWeek.forEach((day) => {
         updatedWorkHours[day] = {
@@ -108,7 +107,7 @@ const RadnoVreme = () => {
         };
       });
 
-      await updateDoc(doc(db, "Frizeri", frizerId), {
+      await updateDoc(doc(db, "FRizeri", frizerId), {
         "frizer.radnoVreme": updatedWorkHours,
         "frizer.korak": sliderValue,
       });
@@ -127,6 +126,7 @@ const RadnoVreme = () => {
   const handleSliderChange = (event, newValue) => {
     setSliderValue(newValue);
   };
+
 
   return (
     <div className="radno-vreme-container">

@@ -28,7 +28,7 @@ const Kategorijausluge = () => {
   useEffect(() => {
     const getKategorije = async () => {
       try {
-        const kategorijeSnapshot = await getDocs(collection(db, "Kategorija"));
+        const kategorijeSnapshot = await getDocs(collection(db, "KAtegorija"));
         const kategorijeData = kategorijeSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -43,7 +43,7 @@ const Kategorijausluge = () => {
 
   const slanjeKategorijeBazi = async () => {
     try {
-      await addDoc(collection(db, "Kategorija"), { kategorija });
+      await addDoc(collection(db, "KAtegorija"), { kategorija });
       setKategorija("");
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -57,11 +57,11 @@ const Kategorijausluge = () => {
   
       if (categoryToDelete) {
         // Obrišite kategoriju
-        await deleteDoc(doc(db, "Kategorija", eventToDelete.id));
+        await deleteDoc(doc(db, "KAtegorija", eventToDelete.id));
   
         // Dohvatite sve usluge koje imaju vrstu usluge koja se podudara sa obrisanom kategorijom
         const servicesQuery = query(
-          collection(db, "Usluge"),
+          collection(db, "USluge"),
           where("vrtsaUsluge", "==", categoryToDelete.kategorija)
         );
   
@@ -106,7 +106,7 @@ const Kategorijausluge = () => {
 
   const sacuvajIzmenu = async () => {
     try {
-      const kategorijaRef = doc(db, "Kategorija", izmenaId);
+      const kategorijaRef = doc(db, "KAtegorija", izmenaId);
       await updateDoc(kategorijaRef, { kategorija: izmenaKategorije });
       const novaKategorijaLista = fbKategorije.map((k) =>
         k.id === izmenaId ? { ...k, kategorija: izmenaKategorije } : k

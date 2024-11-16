@@ -8,12 +8,29 @@ const EventDetailsModal = ({ event, onClose }) => {
     return null; // If no event, don't render the modal
   }
 
+  // Log event structure to debug where the issue is
+  console.log('Event received in modal:', event);
+
+  // Attempt to reference izabraneUsluge and usluge
+  const usluge = event.izabraneUsluge && event.izabraneUsluge.usluge ? event.izabraneUsluge.usluge : {};
+  console.log('Usluge object:', usluge);
+
+  // Calculate the total duration
+  let ukupnoTrajanje = 0;
+  for (const [usluga, trajanje] of Object.entries(usluge)) {
+    console.log(`Service: ${usluga}, Duration: ${trajanje}`);
+    ukupnoTrajanje += parseInt(trajanje) || 0; // Fallback to 0 if invalid
+  }
+
+  console.log('Total duration:', ukupnoTrajanje);
+
   return (
     <Modal show={!!event} onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title className='moasmds'>Detalji Termina</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <div className="vertical-line3"></div>
         <div>
           <p className='tekstmodala'>
             <strong>Korisnik:</strong> {event.imeKorisnika}
@@ -28,7 +45,10 @@ const EventDetailsModal = ({ event, onClose }) => {
             <strong>Usluge:</strong> {event.uslugeString}
           </p>
           <p className='tekstmodala'>
-            <strong>Frizer:</strong> {event.frizer}
+            <strong>Radnik:</strong> {event.frizer}
+          </p>
+          <p className='tekstmodala'>
+            <strong>Trajanje:</strong> {event.minuti}min
           </p>
           <p className='tekstmodala'>
             <strong>Datum i Vreme:</strong>{" "}
@@ -43,11 +63,10 @@ const EventDetailsModal = ({ event, onClose }) => {
               minute: "2-digit",
             })}h
           </p>
-          {/* Add more details as needed */}
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        <Button variant="secondary" onClick={onClose} className='zatvoridugmee'>
           Zatvori
         </Button>
       </Modal.Footer>

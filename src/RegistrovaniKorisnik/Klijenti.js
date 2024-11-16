@@ -13,7 +13,7 @@ const Klijenti = () => {
 
   useEffect(() => {
     const fetchKlijenti = async () => {
-      const klijentiCollection = collection(db, "Klijenti");
+      const klijentiCollection = collection(db, "KLijenti");
       const klijentiSnapshot = await getDocs(klijentiCollection);
       const klijentiData = klijentiSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data().Klijent }));
       setKlijenti(klijentiData);
@@ -25,7 +25,7 @@ const Klijenti = () => {
   const slanjeFrizeraBazi = async () => {
     if (selectedClientId) {
       // Update existing client
-      await updateDoc(doc(db, "Klijenti", selectedClientId), {
+      await updateDoc(doc(db, "KLijenti", selectedClientId), {
         Klijent: {
           ime: ime,
           brojTelefona: broj,
@@ -34,7 +34,7 @@ const Klijenti = () => {
       });
     } else {
       // Add new client
-      const docRef = await addDoc(collection(db, "Klijenti"), {
+      const docRef = await addDoc(collection(db, "KLijenti"), {
         Klijent: {
           ime: ime,
           brojTelefona: broj,
@@ -50,7 +50,7 @@ const Klijenti = () => {
     setBrojVozila("");
     setSelectedClientId(null);
     // Fetch updated data from Firestore and refresh the table
-    const klijentiCollection = collection(db, "Klijenti");
+    const klijentiCollection = collection(db, "KLijenti");
     const klijentiSnapshot = await getDocs(klijentiCollection);
     const klijentiData = klijentiSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data().Klijent }));
     setKlijenti(klijentiData);
@@ -59,7 +59,7 @@ const Klijenti = () => {
 
   const deleteKlijent = async (id) => {
     // Delete client from Firestore
-    await deleteDoc(doc(db, "Klijenti", id));
+    await deleteDoc(doc(db, "KLijenti", id));
 
     // Update the local state by removing the deleted client
     setKlijenti(klijenti.filter((client) => client.id !== id));
@@ -101,13 +101,13 @@ const Klijenti = () => {
           variant="outlined"
           className="input-field"
         />
-        <TextField
+        {/* <TextField
           value={brojVozila}
           onChange={(e) => setBrojVozila(e.target.value)}
           label="Broj vozila"
           variant="outlined"
           className="input-field"
-        />
+        /> */}
         
         <Button variant="contained" onClick={slanjeFrizeraBazi} style={{ marginBottom: selectedClientId ? '10px' : '0' }}>
           {selectedClientId ? "Sacuvaj Izmene" : "Dodaj"}
@@ -127,7 +127,7 @@ const Klijenti = () => {
               <TableRow>
                 <TableCell>Ime</TableCell>
                 <TableCell>Broj telefona</TableCell>
-                <TableCell>Broj vozila</TableCell>
+                {/* <TableCell>Broj vozila</TableCell> */}
                 <TableCell>Akcije</TableCell>
               </TableRow>
             </TableHead>
@@ -136,7 +136,7 @@ const Klijenti = () => {
                 <TableRow key={client.id}>
                   <TableCell>{client.ime}</TableCell>
                   <TableCell>{client.brojTelefona}</TableCell>
-                  <TableCell>{client.brojVozila}</TableCell>
+                  {/* <TableCell>{client.brojVozila}</TableCell> */}
                   <TableCell>
                     <Button onClick={() => editKlijent(client)}>Izmeni</Button>
                     <Button onClick={() => deleteKlijent(client.id)}>Obrisi</Button>

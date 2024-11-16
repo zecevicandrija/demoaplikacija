@@ -6,13 +6,13 @@ import { getStorage } from "firebase/storage";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBbT71IAPmqiM6xUvC3b97uFZY3zgSeaUs",
-  authDomain: "novi-248ee.firebaseapp.com",
-  projectId: "novi-248ee",
-  storageBucket: "novi-248ee.appspot.com",
-  messagingSenderId: "442685719725",
-  appId: "1:442685719725:web:2c987078115e30ba3cb224",
-  measurementId: "G-FQPEJZDESH"
+  apiKey: "AIzaSyCFsEZ8PXgWtPvIsDMSYMisgs-ogydg980",
+  authDomain: "demoprojekat1.firebaseapp.com",
+  projectId: "demoprojekat1",
+  storageBucket: "demoprojekat1.firebasestorage.app",
+  messagingSenderId: "250092830663",
+  appId: "1:250092830663:web:f5cea4b14877a5aa8163e2",
+  measurementId: "G-3RTM9LJVS6"
 };
 
 const app = initializeApp(firebaseConfig);

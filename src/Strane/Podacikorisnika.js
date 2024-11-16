@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import BackButton from "./Dugmenazad";
-import { collection, getDocs,  } from "firebase/firestore";
+import { collection, getDocs, addDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseconfig";
 
 const Podacikorisnika = () => {
@@ -23,7 +23,7 @@ const Podacikorisnika = () => {
 
   useEffect(() => {
     const fetchClients = async () => {
-      const clientsCollection = collection(db, "Klijenti");
+      const clientsCollection = collection(db, "KLijenti");
       const clientsSnapshot = await getDocs(clientsCollection);
       const clientsData = clientsSnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -34,6 +34,29 @@ const Podacikorisnika = () => {
 
     fetchClients();
   }, []);
+
+  const sacuvajKorisnika = async () => {
+    if (!imeKorisnika || !brojKorisnika) {
+      alert("Molimo unesite ime i broj telefona.");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "KLijenti"), {
+        Klijent: {
+          ime: imeKorisnika,
+          brojTelefona: brojKorisnika,
+        },
+      });
+      alert("Korisnik je uspešno sačuvan!");
+      setImeKorisnika("");
+      setBrojKorisnika("+3816");
+      setSelectedClient(null);
+    } catch (error) {
+      console.error("Greška pri čuvanju korisnika: ", error);
+      alert("Došlo je do greške prilikom čuvanja korisnika.");
+    }
+  };
 
   const slanjekorisnika = () => {
     const imeToSend = selectedClient ? selectedClient.ime : imeKorisnika;
@@ -58,11 +81,11 @@ const Podacikorisnika = () => {
         <div className="text-input-container">
           <p className="text1">Ime:</p>
           <Autocomplete
-             freeSolo  // Ova opcija omogućava unos teksta koji nije deo ponuđenih opcija
-             inputValue={autocompleteInputText}
-             onInputChange={(event, newInputText) => {
-               setAutocompleteInputText(newInputText); // Ažuriraj novo stanje unesenog teksta
-             }}
+            freeSolo
+            inputValue={autocompleteInputText}
+            onInputChange={(event, newInputText) => {
+              setAutocompleteInputText(newInputText);
+            }}
             onChange={(event, newValue) => {
               setSelectedClient(newValue);
               setImeKorisnika(newValue ? newValue.ime : "");
@@ -102,10 +125,12 @@ const Podacikorisnika = () => {
         </div>
       </div>
       <div className="podacikorisnikadugmad">
-          <Button className="zavrsite" onClick={slanjekorisnika} variant="contained">
-            Dalje
-          </Button>
-      
+        {/* <Button className="zavrsite" onClick={sacuvajKorisnika} variant="contained">
+          Sačuvaj
+        </Button> */}
+        <Button className="zavrsite" onClick={slanjekorisnika} variant="contained">
+          Dalje
+        </Button>
         <BackButton className="podacidugmenazad">Nazad</BackButton>
       </div>
     </>

@@ -5,6 +5,13 @@
   margin: 0 auto;
 }
 
+.novikalendar {
+  display: flex;
+  justify-content: center;
+  
+  margin-bottom: 35px;
+}
+
 .pozadina {
   position: fixed;
   top: 0;
@@ -130,6 +137,14 @@
   font-size: 14px;
 }
 
+.event-button.edit {
+  background-color: #00b900;
+}
+
+.modal-button.modal-button-cancel {
+  margin-bottom: 10px;
+}
+
 .event-button.delete {
   background-color: #dc3545;
 }
@@ -165,6 +180,7 @@
   transition: 0.3s;
   margin-top: 10px;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .sacuvajdugme:hover {

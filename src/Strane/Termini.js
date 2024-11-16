@@ -3,12 +3,11 @@ import "react-calendar/dist/Calendar.css";
 import { useLocation, useHistory } from "react-router-dom";
 import "./Termini.css";
 import { cloneDeep } from "lodash";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../firebase/firebaseconfig";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import { getAuth } from "firebase/auth"; // For getting the logged-in user
 import {
   generisiOpcijePon,
   generisiOpcijeUto,
@@ -18,50 +17,51 @@ import {
   generisiOpcijeSub,
   generisiOpcijeNed,
 } from "./Pocetneopcije";
-import { db } from "../firebase/firebaseconfig";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 
 const Termini = () => {
   const history = useHistory();
   const location = useLocation();
 
-   // Extract necessary data from location.state
-   const {
-    selectedDate,
-    frizer,
-    radnoVreme,
-    korak,
-    usluge,
-    cena,
-    trajanjeTermina,
-  } = location.state || {};
+  // Učitavanje podataka iz location.state
+  const { selectedDate, usluge, cena, trajanjeTermina, podsetnik, frizeriradnovreme } = location.state || {};
+  console.log("Location state:", location.state);
 
-   // Declare hooks at the top level, before any returns
-   const [pocetakTermina, setPocetkaTermina] = useState(null);
-   const [datum, setDatum] = useState(selectedDate || new Date());
-   const [naseOpcije, setNaseOpcije] = useState([]);
-   const [showModal, setShowModal] = useState(false);
- 
-   useEffect(() => {
-     postaviDatum(datum);
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [datum]);
+  const [pocetakTermina, setPocetkaTermina] = useState(null);
+  const [datum, setDatum] = useState(selectedDate || new Date());
+  const [naseOpcije, setNaseOpcije] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [korak, setKorak] = useState(null); // Step (interval)
+  const [radnoVreme, setRadnoVreme] = useState(null); // Working hours for the center
+  const [frizer, setFrizer] = useState(null); // The center for the logged-in user
 
-  // Handle missing data
-  if (
-    !radnoVreme ||
-    !usluge ||
-    !frizer ||
-    !selectedDate ||
-    !korak ||
-    !trajanjeTermina
-  ) {
+  // Fetching the working hours and frizer from frizeriradnovreme
+  useEffect(() => {
+    if (frizeriradnovreme) {
+      setRadnoVreme(frizeriradnovreme.radnoVreme);
+      setFrizer(frizeriradnovreme.frizer);
+      setKorak(frizeriradnovreme.korak);
+    }
+  }, [frizeriradnovreme]);
+
+  useEffect(() => {
+    if (datum && radnoVreme && korak) {
+      postaviDatum(datum);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datum, radnoVreme, korak]);
+
+  // Proveri nedostaju li potrebni podaci
+  if (!radnoVreme) console.error("RadnoVreme is missing");
+  if (!usluge) console.error("Usluge is missing");
+  if (!frizer) console.error("Frizer is missing");
+  if (!selectedDate) console.error("SelectedDate is missing");
+  if (!korak) console.error("Korak is missing");
+  if (!trajanjeTermina) console.error("TrajanjeTermina is missing");
+
+  if (!radnoVreme || !usluge || !frizer || !selectedDate || !korak || !trajanjeTermina) {
     console.error("Missing required data in Termini.js");
     return <div>Došlo je do greške. Molimo pokušajte ponovo.</div>;
   }
-
-
 
   const slanjeterminabazi = () => {
     history.push("/Podacikorisnika", {
@@ -75,15 +75,14 @@ const Termini = () => {
       frizer,
       cena,
       trajanjeTermina,
+      podsetnik,
     });
   };
 
   async function postaviDatum(event) {
     setDatum(event);
 
-    // Generate initial options based on the day and working hours
     let lokalneOpcije = [];
-
     const dayOfWeek = event.getDay(); // 0 = Sunday, 1 = Monday, etc.
 
     const dayMapping = {
@@ -100,7 +99,6 @@ const Termini = () => {
     const dayRadnoVreme = radnoVreme[dayKey];
 
     if (!dayRadnoVreme || dayRadnoVreme.neradan) {
-      // If the day is not defined or is a non-working day, no available options
       setNaseOpcije([]);
       return;
     }
@@ -109,12 +107,10 @@ const Termini = () => {
     const kraj = parseInt(dayRadnoVreme.kraj);
 
     if (isNaN(pocetak) || isNaN(kraj)) {
-      // Invalid working hours
       setNaseOpcije([]);
       return;
     }
 
-    // Generate options based on the day
     switch (dayKey) {
       case "ponedeljak":
         lokalneOpcije = cloneDeep(generisiOpcijePon(pocetak, kraj, korak));
@@ -141,35 +137,35 @@ const Termini = () => {
         lokalneOpcije = [];
     }
 
-    // Fetch existing appointments for the selected date and hairdresser
+    // Upit ka Firestore da nam da usluge za izabrani datum
     const q = query(
-      collection(db, "Zakazivanje"),
-      where("izabraneUsluge.datum", "==", datum.toDateString()),
+      collection(db, "ZAkazivanje"),
+      where("izabraneUsluge.datum", "==", event),
       where("izabraneUsluge.frizer", "==", frizer)
     );
 
     const querySnapshot = await getDocs(q);
 
-    // Mark all options as available initially
     lokalneOpcije.forEach((opcija) => {
       opcija.slobodan = true;
     });
 
-    // Process booked appointments
     querySnapshot.forEach((doc) => {
       let nasObjekat = doc.data();
-      let bookedServices = nasObjekat.izabraneUsluge.usluge;
+      let pom = nasObjekat.izabraneUsluge.usluge;
       let ukupnoMinuta = 0;
 
-      Object.keys(bookedServices).forEach((item) => {
-        if (bookedServices[item] !== false) {
-          ukupnoMinuta += Number(bookedServices[item]);
+      Object.keys(pom).forEach((item) => {
+        if (pom[item] !== false) {
+          ukupnoMinuta += Number(pom[item]);
         }
       });
 
-      let bookedPocetakTermina = nasObjekat.izabraneUsluge.pocetakTermina.value;
-      if (bookedPocetakTermina) {
-        let [sat, minuti] = bookedPocetakTermina.split(":").map(Number);
+      let pocetakTermina = nasObjekat.izabraneUsluge.pocetakTermina.value;
+      if (pocetakTermina) {
+        let satMinut = pocetakTermina.split(":");
+        let sat = +satMinut[0];
+        let minuti = +satMinut[1];
         let pocetniDatum = new Date(0, 0, 0, sat, minuti);
         let krajnjiDatum = new Date(0, 0, 0, sat, minuti + ukupnoMinuta);
 
@@ -182,17 +178,22 @@ const Termini = () => {
       }
     });
 
-    // Calculate appointment duration
-    let brojKoraka = Math.ceil(trajanjeTermina / korak);
+    let trajanjeMojeUsluge = 0;
+    Object.keys(usluge).forEach((item) => {
+      if (usluge[item] !== false) {
+        trajanjeMojeUsluge += Number(usluge[item]);
+      }
+    });
+
+    let brojKoraka = Math.ceil(trajanjeMojeUsluge / korak);
 
     let nasNiz = cloneDeep(lokalneOpcije);
-
+    console.log(lokalneOpcije);
     nasNiz.forEach((opcija, indeks) => {
       let ostaje = true;
       for (let i = indeks; i < indeks + brojKoraka; i++) {
         if (nasNiz[i] === undefined || nasNiz[i].slobodan === false) {
           ostaje = false;
-          break;
         }
       }
       opcija.slobodan = ostaje;
@@ -208,6 +209,7 @@ const Termini = () => {
   const handleKlikDugmeta = (item) => {
     setPocetkaTermina(item.value);
     setShowModal(true);
+    console.log(item.value);
   };
 
   return (

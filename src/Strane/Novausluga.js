@@ -21,15 +21,16 @@ const Novausluga = () => {
   const [frizeriList, setFrizeriList] = useState([]);
   const [frizer, setFrizer] = useState([]);
   const [slika, setSlika] = useState(null);
+  const [podsetnik, setPodsetnik] = useState()
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const frizeriQuerySnapshot = await getDocs(collection(db, "Frizeri"));
+        const frizeriQuerySnapshot = await getDocs(collection(db, "FRizeri"));
         const frizeriData = frizeriQuerySnapshot.docs.map((doc) => doc.data().frizer.ime);
         console.log(frizeriData)
         setFrizeriList(frizeriData);
-        const uslugeQuerySnapshot = await getDocs(collection(db, "Kategorija"));
+        const uslugeQuerySnapshot = await getDocs(collection(db, "KAtegorija"));
         const uslugaData = uslugeQuerySnapshot.docs.map((doc) => doc.data().kategorija);
 
         // Remove duplicates from the uslugaData array
@@ -60,11 +61,12 @@ const Novausluga = () => {
       }
 
       // Dodaj podatke u Firestore
-      const docRef = await addDoc(collection(db, "Usluge"), {
+      const docRef = await addDoc(collection(db, "USluge"), {
         name,
         cena,
         opis,
         trajanje,
+        podsetnik,
         vrtsaUsluge,
         slika: imageUrl, // Dodajte URL slike
         frizer,
@@ -74,7 +76,7 @@ const Novausluga = () => {
     } catch (e) {
       console.error("Error adding document: ", e);
     }
-    history.push('/PocetnaStrana');
+    history.push('/loginovan');
   };
 
   const nameHandler = (event) => {
@@ -94,6 +96,9 @@ const Novausluga = () => {
   const handleImageUpload = (image) => {
     setSlika(image);
   };
+  const podsetnikHandler = (event) =>{
+    setPodsetnik(event.target.value)
+  }
 
   return (
     <>
@@ -102,6 +107,8 @@ const Novausluga = () => {
         <TextField value={name} onChange={nameHandler} label="Ime usluge" variant="outlined" className="input-polja" />
         <TextField value={cena} onChange={cenaHandler} label="Cena usluge" variant="outlined" className="input-polja" />
         <TextField value={trajanje} onChange={trajanjeHandler} label="Trajanje usluge" variant="outlined" className="input-polja" />
+        <TextField value={podsetnik} onChange={podsetnikHandler} label="Podsetnik" variant="outlined" className="input-polja" />
+
         <TextField value={opis} onChange={opisHandler} label="Opis usluge" variant="outlined" className="input-polja" />
 
         {/* Dodajte komponentu za odabir slike */}

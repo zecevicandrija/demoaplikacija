@@ -35,7 +35,7 @@ const Usluga = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const frizeriQuerySnapshot = await getDocs(collection(db, "Frizeri"));
+        const frizeriQuerySnapshot = await getDocs(collection(db, "FRizeri"));
         const frizeriData = frizeriQuerySnapshot.docs.map((doc) => doc.data().frizer.ime);
         console.log(frizeriData);
         setFrizeriList(frizeriData);
@@ -49,7 +49,7 @@ const Usluga = () => {
 
   async function fetchUsluge() {
     try {
-      const collectionRef = collection(db, "Usluge");
+      const collectionRef = collection(db, "USluge");
       const snapshot = await getDocs(collectionRef);
       const uslugeData = snapshot.docs
         .map((doc) => ({ id: doc.id, ...doc.data() }))
@@ -62,7 +62,7 @@ const Usluga = () => {
 
   const handleDeleting = async () => { //ovo
     if (eventToDelete) {
-      await deleteDoc(doc(db, "Usluge", eventToDelete.id));
+      await deleteDoc(doc(db, "USluge", eventToDelete.id));
       const updatedEvents = usluge.filter((ev) => ev.id !== eventToDelete.id);
       setUsluge(updatedEvents);
     }
@@ -126,6 +126,7 @@ const Usluga = () => {
               </div>
               <p>{item.vrsteUsluga}</p>
               <p>{item.frizer}</p>
+              <p>{item.trajanje}min</p>
               <img src={item.slika} alt="slika5" className="slika1" />
               <div className="uslugedugmad">
               <Button onClick={() => handleEdit(item)} variant="contained" className="logged-in-button">

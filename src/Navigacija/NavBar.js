@@ -43,6 +43,7 @@ const Navbar = () => {
 
   const handleNavbarClick = (e) => {
     e.stopPropagation();
+    setMenuOpen(!menuOpen);
   };
 
   return (

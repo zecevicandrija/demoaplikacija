@@ -23,7 +23,7 @@ const OdabriFrizera = ({ isLoggedIn }) => {
 
   useEffect(() => {
     async function fetchData() {
-      const q = query(collection(db, "Frizeri"));
+      const q = query(collection(db, "FRizeri"));
 
       const querySnapshot = await getDocs(q);
       let frizerisafirebasesa = [];
@@ -69,7 +69,7 @@ const OdabriFrizera = ({ isLoggedIn }) => {
 
   const handleDeleting = async () => {
     if (eventToDelete) {
-      await deleteDoc(doc(db, "Frizeri", eventToDelete.id));
+      await deleteDoc(doc(db, "FRizeri", eventToDelete.id));
       const updatedEvents = fbFrizer.filter((ev) => ev.id !== eventToDelete.id);
       setFbFrizer(updatedEvents);
     }

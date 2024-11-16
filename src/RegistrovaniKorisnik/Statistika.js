@@ -1,3 +1,5 @@
+// Statistika.js
+
 import React, { useState, useEffect } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebaseconfig";
@@ -21,7 +23,7 @@ const Statistika = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        let q = collection(db, "Zakazivanje");
+        let q = collection(db, "ZAkazivanje");
 
         if (odabraniFrizer) {
           q = query(q, where("izabraneUsluge.frizer", "==", odabraniFrizer));
@@ -65,41 +67,98 @@ const Statistika = () => {
 
         const querySnapshot = await getDocs(q);
 
-        const noviNiz = querySnapshot.docs.map((doc) => {
-          let pom = doc.data().izabraneUsluge.usluge;
-          let uslugeString = "";
-          let ukupnoMinuta = 0;
-          Object.keys(pom).forEach((usluga) => {
-            if (pom[usluga] !== false) {
-              uslugeString = uslugeString + " " + usluga;
-              ukupnoMinuta = ukupnoMinuta + Number(pom[usluga]);
+        const noviNiz = querySnapshot.docs
+          .map((doc) => {
+            let pom = doc.data().izabraneUsluge.usluge;
+            let uslugeString = "";
+            let ukupnoMinuta = 0;
+            Object.keys(pom).forEach((usluga) => {
+              if (pom[usluga] !== false) {
+                uslugeString = uslugeString + " " + usluga;
+                ukupnoMinuta = ukupnoMinuta + Number(pom[usluga]);
+              }
+            });
+
+            const datumTimestamp = doc.data().izabraneUsluge.datum;
+            const seconds = datumTimestamp.seconds;
+            const milliseconds = seconds * 1000;
+            const pocetniDatum = new Date(milliseconds);
+
+            // Safely retrieve pocetakTerminaValue
+            const pocetakTerminaValue =
+              doc.data().izabraneUsluge.pocetakTermina?.value ||
+              doc.data().izabraneUsluge.pocetakTermina;
+
+            if (!pocetakTerminaValue) {
+              console.error(
+                `Missing pocetakTermina for document ID: ${doc.id}`
+              );
+              return null; // Skip this document
             }
-          });
 
-          const datumTimestamp = doc.data().izabraneUsluge.datum;
-          const seconds = datumTimestamp.seconds;
-          const milliseconds = seconds * 1000;
-          const pocetniDatum = new Date(milliseconds);
-          let vreme = doc.data().izabraneUsluge.pocetakTermina.value.split(":");
-          let sat = Number(vreme[0]);
-          let min = Number(vreme[1]);
-          pocetniDatum.setHours(sat, min);
-          const krajnjiDatum = new Date(pocetniDatum);
-          krajnjiDatum.setMinutes(pocetniDatum.getMinutes() + ukupnoMinuta);
+            
 
-          return {
-            title: `Korisnik: ${doc.data().imeKorisnika}, telefon: ${doc.data().brojKorisnika}, narucene usluge ${uslugeString}, frizer ${doc.data().izabraneUsluge.frizer} `,
-            start: pocetniDatum,
-            end: krajnjiDatum,
-            minuti: ukupnoMinuta,
-            id: doc.id,
-            imeKorisnika: doc.data().imeKorisnika,
-            brojKorisnika: doc.data().brojKorisnika,
-            frizer: doc.data().izabraneUsluge.frizer,
-            usluge: uslugeString,
-            cena: doc.data().izabraneUsluge.cena,
-          };
-        });
+            let sat, min;
+
+            // Handle different data types
+            if (typeof pocetakTerminaValue === "string") {
+              // If it's a string like "14:30"
+              let vreme = pocetakTerminaValue.split(":");
+              sat = Number(vreme[0]);
+              min = Number(vreme[1]);
+            } else if (
+              pocetakTerminaValue instanceof Date ||
+              (pocetakTerminaValue.seconds !== undefined &&
+                pocetakTerminaValue.nanoseconds !== undefined)
+            ) {
+              // If it's a Firestore Timestamp
+              let dateObj;
+              if (pocetakTerminaValue instanceof Date) {
+                dateObj = pocetakTerminaValue;
+              } else {
+                dateObj = pocetakTerminaValue.toDate();
+              }
+              sat = dateObj.getHours();
+              min = dateObj.getMinutes();
+            } else if (
+              typeof pocetakTerminaValue === "object" &&
+              pocetakTerminaValue.hour !== undefined &&
+              pocetakTerminaValue.minute !== undefined
+            ) {
+              // If it's an object with hour and minute properties
+              sat = Number(pocetakTerminaValue.hour);
+              min = Number(pocetakTerminaValue.minute);
+            } else {
+              console.error(
+                `Unexpected type of pocetakTerminaValue for document ID: ${doc.id}`
+              );
+              return null; // Skip or handle accordingly
+            }
+
+            pocetniDatum.setHours(sat, min);
+            const krajnjiDatum = new Date(pocetniDatum);
+            krajnjiDatum.setMinutes(
+              pocetniDatum.getMinutes() + ukupnoMinuta
+            );
+
+            return {
+              title: `Korisnik: ${doc.data().imeKorisnika}, telefon: ${
+                doc.data().brojKorisnika
+              }, naručene usluge: ${uslugeString}, centar: ${
+                doc.data().izabraneUsluge.frizer
+              } `,
+              start: pocetniDatum,
+              end: krajnjiDatum,
+              minuti: ukupnoMinuta,
+              id: doc.id,
+              imeKorisnika: doc.data().imeKorisnika,
+              brojKorisnika: doc.data().brojKorisnika,
+              frizer: doc.data().izabraneUsluge.frizer,
+              usluge: uslugeString,
+              cena: Number(doc.data().izabraneUsluge.cena),
+            };
+          })
+          .filter((item) => item !== null); // Filter out any null items
 
         // Filter the data based on start and end dates
         let filteredData = noviNiz.filter((item) => {
@@ -121,11 +180,16 @@ const Statistika = () => {
         console.error("Error fetching data:", error);
       }
 
-      const frizeriQuerySnapshot = await getDocs(collection(db, "Frizeri"));
-      const frizeriData = frizeriQuerySnapshot.docs.map(
-        (doc) => doc.data().frizer.ime
-      );
-      setFrizeriList(frizeriData);
+      // Fetching frizeri (centers) list
+      try {
+        const frizeriQuerySnapshot = await getDocs(collection(db, "FRizeri"));
+        const frizeriData = frizeriQuerySnapshot.docs.map(
+          (doc) => doc.data().frizer.ime
+        );
+        setFrizeriList(frizeriData);
+      } catch (error) {
+        console.error("Error fetching frizeri data:", error);
+      }
     }
 
     fetchData();
@@ -146,11 +210,19 @@ const Statistika = () => {
   };
 
   const handleStartDateChange = (date) => {
-    setStartDate(new Date(date)); // Convert string to Date object
+    if (date) {
+      setStartDate(new Date(date));
+    } else {
+      setStartDate(null);
+    }
   };
 
   const handleEndDateChange = (date) => {
-    setEndDate(new Date(date)); // Convert string to Date object
+    if (date) {
+      setEndDate(new Date(date));
+    } else {
+      setEndDate(null);
+    }
   };
 
   const totalItems = myEvents.length;
@@ -185,12 +257,12 @@ const Statistika = () => {
         labelId="frizer-select-label"
         id="frizer-select"
         value={odabraniFrizer}
-        label="Frizer"
+        label="Centar"
         onChange={(event) => setOdabraniFrizer(event.target.value)}
         className="frizer-select"
       >
         <MenuItem key="all" value="">
-          Sve Lokacije
+          Svi centri
         </MenuItem>
         {frizeriList.map((frizerItem) => (
           <MenuItem key={frizerItem} value={frizerItem}>
@@ -236,6 +308,7 @@ const Statistika = () => {
               <th>Naručene usluge</th>
               <th>Datum</th>
               <th>Sati</th>
+              <th>Cena</th>
               <th>Centar</th>
             </tr>
           </thead>
@@ -247,6 +320,7 @@ const Statistika = () => {
                 <td data-label="Naručene usluge">{item.usluge}</td>
                 <td data-label="Datum">{item.start.toLocaleDateString()}</td>
                 <td data-label="Sati">{item.start.toLocaleTimeString()}</td>
+                <td data-label="Cena">{item.cena}</td>
                 <td data-label="Centar">{item.frizer}</td>
               </tr>
             ))}
@@ -257,6 +331,7 @@ const Statistika = () => {
           <ul className="pagination">{renderPaginationButtons()}</ul>
         </nav>
 
+        {/* Uncomment if you wish to display total earnings */}
         <div className="ukupna-zarada">
           <b>Ukupna zarada: {ukupnaZarada}</b>
         </div>

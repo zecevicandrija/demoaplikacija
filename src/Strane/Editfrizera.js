@@ -73,7 +73,7 @@ console.log(`images/${frizer.novoIme}`)
         },
       };
 
-      await updateDoc(doc(db, "Frizeri", frizer.id), updatedFrizer);
+      await updateDoc(doc(db, "FRizeri", frizer.id), updatedFrizer);
       console.log("Dokument uspešno ažuriran.");
       history.push('./Odabrirfrizera');
     } catch (e) {

@@ -79,6 +79,7 @@
   text-align: center;
   width: 25%;
   filter: brightness(90%);
+  cursor: pointer;
 }
 
 .card-text {

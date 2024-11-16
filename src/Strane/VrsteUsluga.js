@@ -1,50 +1,53 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import "./VrsteUsluga.css";
 import Button from "@mui/material/Button";
 import { db } from "../firebase/firebaseconfig";
-import "../RegistrovaniKorisnik/ErrorModal.css";
 import { collection, getDocs, query } from "firebase/firestore";
-import BackButton from "./Dugmenazad";
-import Slider from "@mui/material/Slider";
-import Typography from "@mui/material/Typography";
+import { getAuth } from "firebase/auth";
+import "./VrsteUsluga.css";
 
-const VrsteUsluga = ({ isLoggedIn }) => {
+const VrsteUsluga = () => {
   const history = useHistory();
   const location = useLocation();
-  
   const frizeriradnovreme = location.state || {};
-  const {
-    frizer = '',
-    krajRadnogVremena = '',
-    pocetakRadnogVremena = '',
-    korak = 30,
-    radnoVreme = {},
-    selectedDate = new Date(),
-  } = frizeriradnovreme;
-  
-  console.log(frizeriradnovreme);
+  const { selectedDate = new Date() } = frizeriradnovreme;
+  console.log(frizeriradnovreme)
 
   const [fbUsluge, setFbUsluge] = useState([]);
   const [usluge, setUsluge] = useState({});
   const [jeUslugaOdabrana, setJeUslugaOdabrana] = useState(false);
   const [cena, setCena] = useState(0);
-  const [trajanjeTermina, setTrajanjeTermina] = useState(15);
+  const [frizer, setCenter] = useState(null); // The center associated with the logged-in user
+
+  useEffect(() => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (user) {
+      const userEmail = user.email;
+      //console.log(user);
+      // Map user email to center
+      if (userEmail === "korisnik@demo.com") {
+        setCenter("Korisnik1");
+      } else if (userEmail === "sombor@amss.com") {
+        setCenter("Centar Sombor");
+      }
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
-      const q = query(collection(db, "Usluge"));
+      const q = query(collection(db, "USluge"));
       const querySnapshot = await getDocs(q);
       let uslugesafirenbase = [];
       querySnapshot.forEach((doc) => {
         let obj = { ...doc.data(), id: doc.id };
         uslugesafirenbase.push(obj);
-        console.log(obj);
       });
       setFbUsluge(uslugesafirenbase);
     }
     fetchData();
-  }, [frizer]);
+  }, [frizer]); // Fetch services once the center is set
 
   const uncheckUsluga = (selectedUsluga) => {
     const updatedUsluge = { ...usluge };
@@ -54,135 +57,117 @@ const VrsteUsluga = ({ isLoggedIn }) => {
     setJeUslugaOdabrana(Object.keys(updatedUsluge).length > 0);
   };
 
-  const handleSliderChange = (event, newValue) => {
-    setTrajanjeTermina(newValue);
-  };
-
   const slanjeuslugebaziHandler = async () => {
     const objzaslanje = {};
+    let podsetnik = null; // Podsetnik za izabranu uslugu
     for (const [key, obj] of Object.entries(usluge)) {
-      objzaslanje[obj.naziv] = trajanjeTermina;
+      objzaslanje[obj.naziv] = obj.trajanje; // Use trajanje from the selected service
       console.log(key);
+      podsetnik = obj.podsetnik; // Postavi podsetnik iz izabrane usluge
     }
+    
     history.push("/Zakazitermin", {
       usluge: objzaslanje,
-      krajRadnogVremena,
-      pocetakRadnogVremena,
-      korak,
-      radnoVreme,
+      trajanjeTermina: objzaslanje,
       frizer,
       cena,
-      trajanjeTermina,
       selectedDate,
+      podsetnik,
+      frizeriradnovreme
     });
   };
 
-  const izabraneUslugeHandler = (event, item) => {
-    console.log("event.target.checked:", event.target.checked);
-    console.log("item.cena:", item.cena);
-    console.log("Trenutna cena:", cena);
-    if (!item) {
-      console.error("Item nije definisan");
-      return;
+  const izabraneUslugeHandler = (item) => {
+    const isChecked = !!usluge[item.vrtsaUsluge];
+    const novaCena = isChecked ? cena - item.cena : cena + item.cena;
+
+    const updatedUsluge = isChecked
+      ? { ...usluge }
+      : {
+          ...usluge,
+          [item.vrtsaUsluge]: {
+            naziv: item.name,
+            trajanje: item.trajanje,
+            cena: item.cena,
+            podsetnik: item.podsetnik,
+          },
+        };
+
+    if (isChecked) {
+      delete updatedUsluge[item.vrtsaUsluge];
     }
 
-    const dataIme = event.target.getAttribute("data-ime");
-    const novaCena = event.target.checked ? cena + +item.cena : cena + item.cena;
     setCena(novaCena);
-
-    setUsluge({
-      ...usluge,
-      [event.target.name]: {
-        naziv: dataIme,
-        trajanje: trajanjeTermina,
-        cena: item.cena,
-      },
-    });
-
-    setJeUslugaOdabrana(Object.keys(usluge).length >= 0);
+    setUsluge(updatedUsluge);
+    setJeUslugaOdabrana(Object.keys(updatedUsluge).length > 0);
   };
 
-  console.log(cena);
-
+  //console.log(fbUsluge);
   return (
     <div>
-      <div className="uslugecentar">
-        <h1 className="usluge">Usluge</h1>
-      </div>
-      <div className="pazljivocentar">
-        <div className="pazljivo">
-          Pažljivo pročitajte opis usluga pre odabira i prelaska na naredni korak. Možete izabrati jednu ili više usluga.
-        </div>
-      </div>
-      <div className="slider-container">
-        <Typography id="discrete-slider" gutterBottom>
-          Trajanje termina (min)
-        </Typography>
-        <Slider
-          value={trajanjeTermina}
-          onChange={handleSliderChange}
-          aria-labelledby="discrete-slider"
-          valueLabelDisplay="auto"
-          step={5}
-          marks
-          min={15}
-          max={120}
-        />
-      </div>
+      {frizer && (
+        <>
+          <div className="centriranje">
+            {fbUsluge
+              .filter((item) => item.frizer === frizer) // Filter services by the user's center
+              .map((item) => {
+                const isChecked = Object.entries(usluge).some(
+                  (arr) => arr[1].naziv === item.name
+                );
 
-      <div className="centriranje">
-        {fbUsluge
-          .filter((item) => item.frizer === frizer)
-          .map((item) => {
-            const isChecked = Object.entries(usluge).some(
-              (arr) => arr[1].naziv === item.name
-            );
+                return (
+                  <div
+                    className={`service-card ${isChecked ? "selected" : ""}`}
+                    key={item.id}
+                    onClick={() => izabraneUslugeHandler(item)} // Now the whole card is clickable
+                  >
+                    <div className="card-text">
+                      <h3 className="ime-usluge">{item.name}</h3>
+                      <p className="opis-usluge">{item.opis}</p>
+                      <img src={item.slika} alt="slika5" className="slika1" />
+                      <label>
+                        <input
+                          data-ime={item.name}
+                          type="checkbox"
+                          name={item.vrtsaUsluge}
+                          id={item.id}
+                          value={item.trajanje}
+                          checked={isChecked}
+                          className="cekbox"
+                          readOnly
+                        />
+                      </label>
 
-            return (
-              <div className="service-card" key={item.id}>
-                <div className="card-text">
-                  <h3 className="ime-usluge">{item.name}</h3>
-                  <p className="opis-usluge">{item.opis}</p>
-                  <div className="vrednost-usluge"></div>
-                  <img src={item.slika} alt="slika5  " className="slika1" />
-                  <p>{item.vrsteUsluga}</p>
-                  <label>
-                    <input
-                      data-ime={item.name}
-                      type="checkbox"
-                      name={item.vrtsaUsluge}
-                      id={item.id}
-                      value={item.trajanje}
-                      onChange={(event) => izabraneUslugeHandler(event, item)}
-                      checked={isChecked}
-                      className="cekbox"
-                    />
-                  </label>
+                      {isChecked && (
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering card's onClick
+                            uncheckUsluga(item);
+                          }}
+                          variant="contained"
+                          className="logged-in-button"
+                        >
+                          Poništi
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
 
-                  {isChecked && (
-                    <Button
-                      onClick={() => uncheckUsluga(item)}
-                      variant="contained"
-                      className="logged-in-button"
-                    >
-                      Poništi
-                    </Button>
-                  )}
-                  <div className="kartica-dugmad2"></div>
-                </div>
-              </div>
-            );
-          })}
-      </div>
-
-      <div className="kraj">
-        {jeUslugaOdabrana && (
-          <button className="zakazitermin" onClick={slanjeuslugebaziHandler}>
-            Zakaži termin
-          </button>
-        )}
-      </div>
-      <BackButton>Nazad</BackButton>
+          <div className="kraj">
+            {jeUslugaOdabrana && (
+              <button
+                className="zakazitermin"
+                onClick={slanjeuslugebaziHandler}
+              >
+                Zakaži termin
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };

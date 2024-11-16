@@ -15,8 +15,8 @@ import { db } from "../firebase/firebaseconfig";
 import "./Registrovanikorisnik.css";
 import EventDetailsModal from "./EventDeatilsModal";
 import { useHistory } from "react-router-dom";
-// import grb324 from '../images/grb324.jpg'
-
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css'; // Uvoz CSS-a za kalendar
 
 const Registrovanikorisnik = () => {
   const [myEvents, setMyEvents] = useState([]);
@@ -30,17 +30,21 @@ const Registrovanikorisnik = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const history = useHistory();
 
+  // Dodate nove state promenljive za novi kalendar
+  const [currentMonthCalendar, setCurrentMonthCalendar] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const frizeriQuerySnapshot = await getDocs(collection(db, "Frizeri"));
+        const frizeriQuerySnapshot = await getDocs(collection(db, "FRizeri"));
         const frizeriData = frizeriQuerySnapshot.docs.map(
           (doc) => doc.data().frizer.ime
         );
         setFrizeriList(frizeriData);
 
-        let q = collection(db, "Zakazivanje");
+        let q = collection(db, "ZAkazivanje");
 
         if (frizer !== "") {
           q = query(q, where("izabraneUsluge.frizer", "==", frizer));
@@ -96,7 +100,14 @@ const Registrovanikorisnik = () => {
           };
           return obj;
         });
-        setMyEvents(noviNiz);
+
+        // Filter out past events
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set time to midnight for accurate comparison
+
+        const filteredNoviNiz = noviNiz.filter((event) => event.start >= today);
+
+        setMyEvents(filteredNoviNiz);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -122,7 +133,7 @@ const Registrovanikorisnik = () => {
 
     try {
       if (editUserData && editUserData.id) {
-        const docRef = doc(db, "Zakazivanje", editUserData.id);
+        const docRef = doc(db, "ZAkazivanje", editUserData.id);
 
         await updateDoc(docRef, {
           imeKorisnika: editUserData.imeKorisnika,
@@ -156,7 +167,7 @@ const Registrovanikorisnik = () => {
 
   const handleDeleting = async () => {
     if (eventToDelete && eventToDelete.id) {
-      await deleteDoc(doc(db, "Zakazivanje", eventToDelete.id));
+      await deleteDoc(doc(db, "ZAkazivanje", eventToDelete.id));
 
       const updatedEvents = myEvents.filter((ev) => ev.id !== eventToDelete.id);
       setMyEvents(updatedEvents);
@@ -203,7 +214,18 @@ const Registrovanikorisnik = () => {
 
     const calendar = [];
 
-    for (let day = 1; day <= daysInMonth; day++) {
+    const today = new Date();
+    let startDay = 1;
+
+    // Adjust start day if current month is the present month
+    if (
+      currentMonth.getFullYear() === today.getFullYear() &&
+      currentMonth.getMonth() === today.getMonth()
+    ) {
+      startDay = today.getDate();
+    }
+
+    for (let day = startDay; day <= daysInMonth; day++) {
       calendar.push(
         new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
       );
@@ -215,13 +237,70 @@ const Registrovanikorisnik = () => {
   const calendar = generateCalendar();
 
   const handleZakaziClick = (date) => {
+    //console.log('Navigating to VrsteUsluga with selectedDate:', date);
     history.push('/Odabrirfrizera', { selectedDate: date });
   };
-  
+
+  // Disable previous month button if current month is the present month
+  const today = new Date();
+  const isPrevMonthDisabled =
+    currentMonth.getFullYear() === today.getFullYear() &&
+    currentMonth.getMonth() === today.getMonth();
+
+
+    // Funkcije za novi kalendar
+  const generateSimpleCalendar = (year, month) => {
+    const firstDayOfMonth = new Date(year, month, 1);
+    let firstDayIndex = firstDayOfMonth.getDay(); // 0 (Sunday) to 6 (Saturday)
+    firstDayIndex = (firstDayIndex + 6) % 7; // Adjust so that Monday is 0
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const calendar = [];
+    let week = [];
+    let dayCounter = 1;
+
+    // Fill empty slots before first day of month
+    for (let i = 0; i < firstDayIndex; i++) {
+      week.push(null);
+    }
+
+    // Fill the rest of the month
+    while (dayCounter <= daysInMonth) {
+      if (week.length === 7) {
+        calendar.push(week);
+        week = [];
+      }
+
+      week.push(new Date(year, month, dayCounter++));
+    }
+
+    // Fill the last week
+    while (week.length < 7) {
+      week.push(null);
+    }
+    calendar.push(week);
+
+    return calendar;
+  };
+
+    const onDateChange = (date) => {
+      setSelectedDate(date);
+      history.push('/VrsteUsluga', { selectedDate: date });
+    };
+    
 
   return (
     <div className="container">
-       {/* <img src={grb324} className='pozadina' alt="grb"></img> */}
+      {/* Novi kalendar na vrhu stranice */}
+      {/* <div className="novikalendar">
+      <Calendar
+        onChange={onDateChange}
+        value={selectedDate}
+        minDate={new Date()}  // This will disable all past dates
+      />
+      </div> */}
+      {/* <img src={grb324} className='pozadina' alt="grb"></img> */}
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
@@ -241,7 +320,11 @@ const Registrovanikorisnik = () => {
       </Select>
 
       <div className="calendar-header">
-        <button onClick={prevMonth} className="month-button">
+        <button
+          onClick={prevMonth}
+          className="month-button"
+          disabled={isPrevMonthDisabled}
+        >
           {"<"}
         </button>
         <h2>
@@ -264,7 +347,12 @@ const Registrovanikorisnik = () => {
               {date.toLocaleDateString("sr-Latn-RS", { weekday: "long" })}
             </div>
             <div className="events-list">
-              <button className="kalendarzakazivanje" onClick={() => handleZakaziClick(date)}>Zakaži</button>
+              <button
+                className="kalendarzakazivanje"
+                onClick={() => handleZakaziClick(date)}
+              >
+                Zakaži
+              </button>
               {myEvents
                 .filter(
                   (event) => event.start.toDateString() === date.toDateString()
@@ -286,7 +374,7 @@ const Registrovanikorisnik = () => {
                         Pregled
                       </button>
                       <button
-                        className="event-button"
+                        className="event-button edit"
                         onClick={() => handleEditUser(event)}
                       >
                         Izmeni
