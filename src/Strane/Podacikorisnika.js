@@ -21,6 +21,26 @@ const Podacikorisnika = () => {
   const [clients, setClients] = useState([]);
   const [autocompleteInputText, setAutocompleteInputText] = useState("");
 
+  // Funkcija za transliteraciju srpskih slova u engleska
+  const transliterate = (text) => {
+    const map = {
+      č: "c",
+      ć: "c",
+      đ: "dj",
+      š: "s",
+      ž: "z",
+      Č: "C",
+      Ć: "C",
+      Đ: "Dj",
+      Š: "S",
+      Ž: "Z",
+    };
+    return text
+      .split("")
+      .map((char) => map[char] || char)
+      .join("");
+  };
+
   useEffect(() => {
     const fetchClients = async () => {
       const clientsCollection = collection(db, "KLijenti");
@@ -41,16 +61,18 @@ const Podacikorisnika = () => {
       return;
     }
 
+    const imeBezSpecijalnihSlova = transliterate(imeKorisnika);
+
     try {
       await addDoc(collection(db, "KLijenti"), {
         Klijent: {
-          ime: imeKorisnika,
+          ime: imeBezSpecijalnihSlova,
           brojTelefona: brojKorisnika,
         },
       });
       alert("Korisnik je uspešno sačuvan!");
-      setImeKorisnika("");
-      setBrojKorisnika("+3816");
+      // setImeKorisnika("");
+      // setBrojKorisnika("+3816");
       setSelectedClient(null);
     } catch (error) {
       console.error("Greška pri čuvanju korisnika: ", error);
@@ -59,8 +81,12 @@ const Podacikorisnika = () => {
   };
 
   const slanjekorisnika = () => {
-    const imeToSend = selectedClient ? selectedClient.ime : imeKorisnika;
-    const brojToSend = selectedClient ? selectedClient.brojTelefona : brojKorisnika;
+    const imeToSend = selectedClient
+      ? transliterate(selectedClient.ime)
+      : transliterate(imeKorisnika);
+    const brojToSend = selectedClient
+      ? selectedClient.brojTelefona
+      : brojKorisnika;
 
     history.push("/Detaljitermina", {
       izabraneUsluge,
@@ -125,9 +151,9 @@ const Podacikorisnika = () => {
         </div>
       </div>
       <div className="podacikorisnikadugmad">
-        {/* <Button className="zavrsite" onClick={sacuvajKorisnika} variant="contained">
+        <Button className="zavrsite" onClick={sacuvajKorisnika} variant="contained">
           Sačuvaj
-        </Button> */}
+        </Button>
         <Button className="zavrsite" onClick={slanjekorisnika} variant="contained">
           Dalje
         </Button>

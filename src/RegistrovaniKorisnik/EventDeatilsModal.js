@@ -5,25 +5,57 @@ import './EventDetailsModal.css';
 
 const EventDetailsModal = ({ event, onClose }) => {
   if (!event) {
-    return null; // If no event, don't render the modal
+    return null; 
   }
 
-  // Log event structure to debug where the issue is
+ 
   console.log('Event received in modal:', event);
 
-  // Attempt to reference izabraneUsluge and usluge
   const usluge = event.izabraneUsluge && event.izabraneUsluge.usluge ? event.izabraneUsluge.usluge : {};
   console.log('Usluge object:', usluge);
 
-  // Calculate the total duration
   let ukupnoTrajanje = 0;
   for (const [usluga, trajanje] of Object.entries(usluge)) {
     console.log(`Service: ${usluga}, Duration: ${trajanje}`);
-    ukupnoTrajanje += parseInt(trajanje) || 0; // Fallback to 0 if invalid
+    ukupnoTrajanje += parseInt(trajanje) || 0; 
   }
 
   console.log('Total duration:', ukupnoTrajanje);
 
+
+
+  const handlePrintReceipt = async () => {
+    const receiptDetails = {
+      uslugeString: event.uslugeString || "Nepoznate usluge",
+      frizer: event.frizer || "Nepoznati radnik",
+      start: event.start ? event.start.toISOString() : new Date().toISOString(),
+      minuti: event.minuti || 0,
+    };
+  
+    console.log("Podaci poslati serveru za štampanje:", receiptDetails);
+  
+    try {
+      const response = await fetch("http://localhost:5000/api/print-receipt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(receiptDetails),
+      });
+  
+      if (response.ok) {
+        alert("Račun je uspešno odštampan!");
+      } else {
+        const errorDetails = await response.json();
+        console.error("Greška na serveru:", errorDetails);
+        alert("Došlo je do greške prilikom štampanja.");
+      }
+    } catch (error) {
+      console.error("Greška u komunikaciji sa serverom:", error);
+      alert("Nije moguće poslati zahtev za štampanje.");
+    }
+  };
+  
   return (
     <Modal show={!!event} onHide={onClose}>
       <Modal.Header closeButton>
@@ -69,6 +101,9 @@ const EventDetailsModal = ({ event, onClose }) => {
         <Button variant="secondary" onClick={onClose} className='zatvoridugmee'>
           Zatvori
         </Button>
+        <Button className="modal-button print-button" onClick={handlePrintReceipt}>
+            Račun
+          </Button>
       </Modal.Footer>
     </Modal>
   );

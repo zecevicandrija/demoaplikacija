@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { db } from "../firebase/firebaseconfig";
+import { db } from "../firebase/firebaseconfig.js";
 import { collection, addDoc } from "firebase/firestore";
 import "./Detaljitermina.css"
 import BackButton from "./Dugmenazad";
@@ -38,116 +38,92 @@ console.log(Number(cena))
 
   const handleZakazi = async () => {
     try {
-      const god = izabraneUsluge.datum.getFullYear();
-      const mes = izabraneUsluge.datum.getMonth() + 1;
-      const dan = izabraneUsluge.datum.getDate();
-      const datum = `${god}.${mes}.${dan}`;
-      
-      // Dodavanje termina u Firestore bazu
+      // Extract necessary details from selected services
+      const appointmentDate = izabraneUsluge.datum; // Appointment date
+      const reminderDays = podsetnikVrednost || 1; // Default reminder to 1 day if not provided
+  
+      // Calculate reminder date
+      const reminderDate = new Date(appointmentDate);
+      reminderDate.setDate(reminderDate.getDate() + reminderDays);
+  
+      // Format the date for storage
+      const formattedAppointmentDate = `${appointmentDate.getFullYear()}-${appointmentDate.getMonth() + 1}-${appointmentDate.getDate()}`;
+  
+      // Save appointment and reminder details in Firestore
       const docRef = await addDoc(collection(db, "ZAkazivanje"), {
         izabraneUsluge,
         imeKorisnika,
         brojKorisnika,
         registarskaTablica,
-        datum,
+        datum: formattedAppointmentDate,
+        reminderDate: reminderDate.toISOString(), // Save as ISO string for easier date comparison
         cena,
-        podsetnikVrednost  // Broj dana nakon kog treba poslati SMS
+        podsetnikVrednost, // Reminder days
       });
   
-      // Slanje SMS poruke
-      
-
-      var myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
-myHeaders.append("Authorization", "EIVtX3IXREwa5NDcJ9NAZrnlEgnF3e5bsCSQvPWR8kyTJVCXKZFTbSEqAlv9O2Qj6xIkUROST3Bfz4juYtXHhUTH2Qk8fa67rQ65BugmOfwU9M113lSMSGBp5lfZBhwK");
-
-
-var raw = JSON.stringify({
-  "to": [
-    brojKorisnika
-  ],
-  "message": `Poštovani ${imeKorisnika}, vaš termin je uspešno zakazan za ${formatiranDatum} u ${pocetakTerminaValue}h.`,
-  "from": "SMSAgent",
-  "type": "INFO"
-});
-
-var requestOptions = {
-  method: 'POST',
-  headers: myHeaders,
-  body: raw,
-  redirect: 'follow'
-};
-
-fetch("https://api.smsagent.rs/v1/sms/bulk", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
-
-    // Prikaz uspešne poruke
+      // Send immediate confirmation SMS
+      const smsResponse = await fetch("http://localhost:5000/api/send-sms", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: brojKorisnika,
+          message: `Postovani ${imeKorisnika}, vas termin je uspesno zakazan za ${formattedAppointmentDate} u ${pocetakTerminaValue}h.`,
+          from: "SMSAgent",
+          type: "INFO",
+        }),
+      });
+  
+      if (!smsResponse.ok) {
+        console.error("Greška prilikom slanja SMS-a potvrde:", await smsResponse.json());
+      }
+  
+      // Show success alert
+      showAlert("Zakazan!", "Vaš termin je uspešno zakazan i SMS je poslat!");
+  
+      // Redirect to another page
+      history.push("/loginovan");
+  
+    } catch (error) {
+      console.error("Greška pri zakazivanju:", error);
+  
+      // Show error alert
+      showAlert("Greška!", "Došlo je do greške, termin nije zakazan.");
+    }
+  };
+  
+  // Helper function to show alert
+  const showAlert = (title, message) => {
     const overlay = document.createElement("div");
     overlay.className = "alert-overlay";
-
+  
     const alertBox = document.createElement("div");
     alertBox.className = "alert-box";
-
-    const title = document.createElement("div");
-    title.className = "alert-title";
-    title.textContent = "Zakazan!";
-
-    const message = document.createElement("div");
-    message.className = "alert-message";
-    message.textContent = "Vaš termin je uspešno zakazan i SMS je poslat!";
-
+  
+    const titleElement = document.createElement("div");
+    titleElement.className = "alert-title";
+    titleElement.textContent = title;
+  
+    const messageElement = document.createElement("div");
+    messageElement.className = "alert-message";
+    messageElement.textContent = message;
+  
     const closeButton = document.createElement("button");
     closeButton.className = "alert-button";
     closeButton.textContent = "Zatvori";
     closeButton.addEventListener("click", () => {
       document.body.removeChild(overlay);
     });
-
-    alertBox.appendChild(title);
-    alertBox.appendChild(message);
+  
+    alertBox.appendChild(titleElement);
+    alertBox.appendChild(messageElement);
     alertBox.appendChild(closeButton);
     overlay.appendChild(alertBox);
-
+  
     document.body.appendChild(overlay);
-  
-      console.log("Document written with ID: ", docRef.id);
-      history.push("/loginovan");
-  
-    } catch (e) {
-      console.error("Greška pri zakazivanju:", e);
-  
-      // Prikaz greške
-      const overlayError = document.createElement("div");
-      overlayError.className = "alert-overlay";
-  
-      const alertBoxError = document.createElement("div");
-      alertBoxError.className = "alert-box";
-  
-      const titleError = document.createElement("div");
-      titleError.className = "alert-title";
-      titleError.textContent = "Greška!";
-  
-      const messageError = document.createElement("div");
-      messageError.className = "error-message";
-      messageError.textContent = "Došlo je do greške, termin nije zakazan.";
-  
-      const closeButtonError = document.createElement("button");
-      closeButtonError.className = "alert-button";
-      closeButtonError.textContent = "Zatvori";
-      closeButtonError.addEventListener("click", () => {
-        document.body.removeChild(overlayError);
-      });
-  
-      alertBoxError.appendChild(titleError);
-      alertBoxError.appendChild(messageError);
-      alertBoxError.appendChild(closeButtonError);
-      overlayError.appendChild(alertBoxError);
-  
-      document.body.appendChild(overlayError);
-    }
   };
+  
   
   
 

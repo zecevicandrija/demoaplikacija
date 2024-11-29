@@ -33,4 +33,19 @@
   margin: 15px 5px 0 0;
   font-size: 14px;
   }
+
+  .modal-button.print-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 11px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 10px;
+  }
+  
+  .modal-button.print-button:hover {
+    background-color: #218838;
+  }
+  
   
