@@ -1,7 +1,7 @@
 import admin from "firebase-admin";
 
 // Putanja do Firebase privatnog ključa
-import serviceAccount from "./service-firebase.json" assert { type: "json" };
+const serviceAccount = require("./service-firebase.json");
 
 
 admin.initializeApp({
