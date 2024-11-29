@@ -1,8 +1,7 @@
 import admin from "firebase-admin";
 
-// Putanja do Firebase privatnog ključa
-const serviceAccount = require("./service-firebase.json");
-
+// Učitaj JSON iz environment varijable
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
